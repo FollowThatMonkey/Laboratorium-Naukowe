@@ -2,6 +2,7 @@ import numpy as np
 from random import randint, random
 from sys import argv
 import math
+import matplotlib.pyplot as plt
 
 N = 100
 p = 0.1
@@ -11,7 +12,7 @@ if len(argv) == 3:
 matrix = np.zeros((N, N), dtype = int) #utworzenie macierzy NxN pełnej zer
 theta = math.log(p / (1-p)) #theta ze wzorku z hamiltonianu
 E_current = 0 # aktualna liczba krawędzi grafu
-how_many_iterations = 1000000 # liczba iteracji (losowań grafu i jego zmiany)
+how_many_iterations = int(1.5e6) # liczba iteracji (losowań grafu i jego zmiany)
 
 ## pomocniczne funkcje (używane niżej) ##
 
@@ -52,7 +53,7 @@ for iteration in range (how_many_iterations):
     else: #przypadek gdy wylosowaliśmy krawędź (rozpatrujemy jej usunięcie)
         H_new = theta * (E_current - 1) #nowy hamiltonian Hj=theta*E_j
 
-        dH = H_new - H_current
+        dH = H_new - H_current #delta hamiltonianów
 
         if dH >= 0:
             remove_vertex(row, col)
@@ -63,3 +64,21 @@ for iteration in range (how_many_iterations):
 
 print("Number of edges:", E_current)
 np.savetxt("macierz_" + str(N) + "x" + str(N) + "_" + str(p), matrix, fmt = '%.1d')
+
+## wykres ##
+
+ki = np.zeros(N, dtype = int) #tablica stopni wierzchołków
+for row in range(N):
+    for col in range(N):
+        ki[row] += matrix[row][col]
+number_bins = int(np.amax(ki)-np.amin(ki))
+
+plt.hist(ki, bins = number_bins, density = True, rwidth = 0.9)
+plt.title("Histogram P(k) dla symulowanego grafu o N = " + str(N) + " oraz p = " + str(p))
+plt.xlabel("k"); plt.ylabel("Prawdopodobieństwo")
+plt.grid(True)
+plt.savefig("histogram_" + str(N) + "x" + str(N) + "_" + str(p) + ".png", dpi = 240)
+plt.show()
+
+#########################################
+
