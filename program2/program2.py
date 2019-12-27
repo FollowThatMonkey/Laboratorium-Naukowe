@@ -6,12 +6,12 @@ import math
 N = 100
 p = 0.1
 if len(argv) == 3:
-    N, p = argv[1], argv[2]
+    N, p = int(argv[1]), float(argv[2])
 
 matrix = np.zeros((N, N), dtype = int) #utworzenie macierzy NxN pełnej zer
 theta = math.log(p / (1-p)) #theta ze wzorku z hamiltonianu
 E_current = 0 # aktualna liczba krawędzi grafu
-how_many_iterations = N**3 # liczba iteracji (losowań grafu i jego zmiany)
+how_many_iterations = 1000000 # liczba iteracji (losowań grafu i jego zmiany)
 
 ## pomocniczne funkcje (używane niżej) ##
 
@@ -44,7 +44,9 @@ for iteration in range (how_many_iterations):
 
         dH = H_new - H_current #delta hamiltonianów
         
-        if random() < math.exp(dH): #z prawdopodobieństwem dodajemy krawędź
+        if dH >= 0:
+            add_vertex(row, col)
+        elif random() <= math.exp(dH):
             add_vertex(row, col)
 
     else: #przypadek gdy wylosowaliśmy krawędź (rozpatrujemy jej usunięcie)
@@ -52,9 +54,12 @@ for iteration in range (how_many_iterations):
 
         dH = H_new - H_current
 
-        if random() < math.exp(dH): #z prawdopodobieństwem dodajemy krawędź
+        if dH >= 0:
+            remove_vertex(row, col)
+        elif random() <= math.exp(dH):
             remove_vertex(row, col)
 
-    print("Edges", E_current)
+#########################################
 
+print("Number of edges:", E_current)
 np.savetxt("macierz_" + str(N) + "x" + str(N) + "_" + str(p), matrix, fmt = '%.1d')
