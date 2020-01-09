@@ -65,6 +65,8 @@ plt.ylabel("Prawdopodobieństwo")
 plt.xlim(np.amin(praktyka[0]) - int(math.sqrt(N/10)), np.amax(praktyka[0]) + int(math.sqrt(N/10)))
 plt.legend()
 plt.grid(True)
+rozmiar = plt.gcf().get_size_inches()
+plt.gcf().set_size_inches(rozmiar[0] * 2, rozmiar[1] * 2)
 plt.gcf().gca().xaxis.set_major_locator(MaxNLocator(integer=True))
 
 plt.savefig("histogram_" + str(N) + "x" + str(N) + "_" + str(p) + ".png", dpi = 240) # zapisanie wykresu do pliku
