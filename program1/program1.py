@@ -2,6 +2,7 @@ import numpy as np
 from random import random
 from scipy.special import comb
 import matplotlib.pyplot as plt
+from matplotlib.ticker import MaxNLocator
 import sys, math
 
 N = 100 #liczba wierzchołków
@@ -31,7 +32,7 @@ def random_graph(N, p): # tworzenie losowego grafu klasyczną metodą
 
     P = np.array([], dtype = float) #tworzenie pustej tablicy
     for i in range(min(K), max(K)+1): #pętla w zakresie od minimalnego do maksymalnego stopnia wierzhołka K
-        P = np.append(P, float(np.count_nonzero(K == i))) #zliczenie liczby stopni danego weirzchołka K
+        P = np.append(P, float(np.count_nonzero(K == i))) #zliczanie liczby wierzchołków o stopniu K
    
     zakres = np.arange(min(K), max(K)+1) # zakres dla krtórego będzie tworzony histogram!
 
@@ -64,6 +65,7 @@ plt.ylabel("Prawdopodobieństwo")
 plt.xlim(np.amin(praktyka[0]) - int(math.sqrt(N/10)), np.amax(praktyka[0]) + int(math.sqrt(N/10)))
 plt.legend()
 plt.grid(True)
+plt.gcf().gca().xaxis.set_major_locator(MaxNLocator(integer=True))
 
 plt.savefig("histogram_" + str(N) + "x" + str(N) + "_" + str(p) + ".png", dpi = 240) # zapisanie wykresu do pliku
 plt.show()
