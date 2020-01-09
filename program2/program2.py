@@ -73,7 +73,7 @@ for row in range(N):
         ki[row] += matrix[row][col]
 number_bins = int(np.amax(ki)-np.amin(ki))
 
-plt.hist(ki, bins = number_bins, density = True, rwidth = 0.9)
+plt.hist(ki, bins = number_bins + 1 , density = True, rwidth = 0.9)
 plt.title("Histogram P(k) dla symulowanego grafu o N = " + str(N) + " oraz p = " + str(p))
 plt.xlabel("k"); plt.ylabel("Prawdopodobieństwo")
 plt.grid(True)

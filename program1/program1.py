@@ -24,12 +24,18 @@ def random_graph(N, p): # tworzenie losowego grafu klasyczną metodą
     
     np.savetxt("macierz_" + str(N) + "x" + str(N) + "_" + str(p), matrix, fmt = '%.1d') # zapis macierzy do pliku
 
-    ki = np.zeros(N, dtype = int) #tablica stopni wierzchołków, z niej dalej będzie tworzony histogram P(k)
+    K = np.zeros(N, dtype = int) #tablica stopni wierzchołków, z niej dalej będzie tworzony histogram P(k)
     for row in range(N):
         for col in range(N):
-            ki[row] += matrix[row][col]
+            K[row] += matrix[row][col]
 
-    return ki
+    P = np.array([], dtype = float) #tworzenie pustej tablicy
+    for i in range(min(K), max(K)+1): #pętla w zakresie od minimalnego do maksymalnego stopnia wierzhołka K
+        P = np.append(P, float(np.count_nonzero(K == i))) #zliczenie liczby stopni danego weirzchołka K
+   
+    zakres = np.arange(min(K), max(K)+1) # zakres dla krtórego będzie tworzony histogram!
+
+    return zakres, P/N
 
 def binominal_dist(N, p): # P(k) ze wzoru
     P = np.zeros(N)
@@ -49,14 +55,14 @@ teoria = binominal_dist(N, p)
 #########################################
 
 ## Wykresik ##
-num_bins = (np.amax(praktyka)-np.amin(praktyka)) - 1
 
-plt.hist(praktyka, bins = num_bins, density = True, rwidth = 0.9) # utworzenie znormalizowanego histogramu dla klasycznego grafu losowego
-plt.bar(np.arange(len(teoria)), teoria, color = 'y', width = 0.7, alpha = 0.5) # utworzenie wykresu słupkowego P(k) dla wzorku teoretycznego
+plt.bar(praktyka[0], praktyka[1], align="center", width=0.9, label = "Graf losowy")
+plt.bar(np.arange(len(teoria)), teoria, align = "center", width = 0.6, alpha = 0.5, label="Rozkład dwumianowy") # utworzenie wykresu słupkowego P(k) dla wzorku teoretycznego
 plt.title("Histogram P(k) dla wygenerowanego grafu losowego o N = " + str(N) + " oraz p = " + str(p) + " oraz danych teoretycznych", wrap=True)
 plt.xlabel("k")
 plt.ylabel("Prawdopodobieństwo")
-plt.xlim(np.amin(praktyka) - int(math.sqrt(N/10)), np.amax(praktyka) + int(math.sqrt(N/10)))
+plt.xlim(np.amin(praktyka[0]) - int(math.sqrt(N/10)), np.amax(praktyka[0]) + int(math.sqrt(N/10)))
+plt.legend()
 plt.grid(True)
 
 plt.savefig("histogram_" + str(N) + "x" + str(N) + "_" + str(p) + ".png", dpi = 240) # zapisanie wykresu do pliku
