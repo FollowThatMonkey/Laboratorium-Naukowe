@@ -57,8 +57,8 @@ teoria = binominal_dist(N, p)
 
 ## Wykresik ##
 
-plt.bar(praktyka[0], praktyka[1], align="center", width=0.9, label = "Graf losowy")
-plt.bar(np.arange(len(teoria)), teoria, align = "center", width = 0.6, alpha = 0.5, label="Rozkład dwumianowy") # utworzenie wykresu słupkowego P(k) dla wzorku teoretycznego
+plt.bar(praktyka[0], praktyka[1], width=0.9, label = "Graf losowy")
+plt.bar(np.arange(len(teoria)), teoria, width = 0.6, alpha = 0.5, label="Rozkład dwumianowy") # utworzenie wykresu słupkowego P(k) dla wzorku teoretycznego
 plt.title("Histogram P(k) dla wygenerowanego grafu losowego o N = " + str(N) + " oraz p = " + str(p) + " oraz danych teoretycznych", wrap=True)
 plt.xlabel("k")
 plt.ylabel("Prawdopodobieństwo")
