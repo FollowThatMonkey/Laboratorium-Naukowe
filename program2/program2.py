@@ -5,6 +5,7 @@ import math
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
 from statistics import mean
+from scipy.special import comb
 
 N = 100
 p = 0.1
@@ -19,7 +20,9 @@ E_mean_list = [0] * how_many_iter #tablica lizcby krawędzi grafu z ostatnich it
 E_mean_current = 0 #obecna średnia liczba krawędzi
 how_many_previous = 10 #liczba mówiąca ile ostatnich średnich będzie porównywana
 E_mean_previous = [math.nan]*how_many_previous #tablica zawierająca określoną liczbę ostatnio liczonych średnich
-comparison_accuracy = 15 #dokładność z którą porównywane będą średnie
+comparison_accuracy = 13 #dokładność z którą porównywane będą średnie
+
+f = open("E(t)_"+str(N)+"x"+str(N)+"_"+str(p)+".txt", "w")
 
 ## pomocniczne funkcje (używane niżej) ##
 
@@ -65,6 +68,7 @@ while True:
 
     if iteration % how_many_iter == 0:
         E_mean_current = int(mean(E_mean_list))
+        f.write(str(iteration) + " " + str(E_mean_current) + "\n")
 
         print("Iteracja =", iteration, ", E_mean_current =", E_mean_current,", E_mean_previous =", E_mean_previous)
 
@@ -78,6 +82,7 @@ while True:
 
 #########################################
 
+f.close()
 print("Number of edges:", E_current)
 np.savetxt("macierz_" + str(N) + "x" + str(N) + "_" + str(p), matrix, fmt = '%.1d')
 
