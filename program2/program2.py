@@ -18,14 +18,21 @@ E_current = 0 # aktualna liczba krawędzi grafu
 how_many_iter = 800 # liczba iteracji co ile będzie sprawdzane czy <E>=const.
 E_mean_list = [0] * how_many_iter #tablica lizcby krawędzi grafu z ostatnich iteracji
 E_mean_current = 0 #obecna średnia liczba krawędzi
-how_many_previous = 10 #liczba mówiąca ile ostatnich średnich będzie porównywana
+how_many_previous = 9 #liczba mówiąca ile ostatnich średnich będzie porównywana
 E_mean_previous = [math.nan]*how_many_previous #tablica zawierająca określoną liczbę ostatnio liczonych średnich
 comparison_accuracy = 13 #dokładność z którą porównywane będą średnie
 
-f = open("E(t)_"+str(N)+"x"+str(N)+"_"+str(p)+".txt", "w")
+f = open("E(t)_"+str(N)+"x"+str(N)+"_"+str(p)+".txt", "w") # plik w którym zapisywane jest E(t)
 
 ## pomocniczne funkcje (używane niżej) ##
+def binominal_dist(N, p): # P(k) ze wzoru
+    P = np.zeros(N)
 
+    for ki in range(N):
+        P[ki] = comb(N-1, ki) * p**ki * (1-p)**(N-1-ki)
+
+    return P
+ 
 def random_vertex():
     row, col = randint(0, N-1), randint(0, N-1)
     while row == col:
@@ -68,13 +75,13 @@ while True:
 
     if iteration % how_many_iter == 0:
         E_mean_current = int(mean(E_mean_list))
-        f.write(str(iteration) + " " + str(E_mean_current) + "\n")
+        f.write(str(iteration) + " " + str(E_mean_current) + "\n") # zapisywanie E(t)
 
         print("Iteracja =", iteration, ", E_mean_current =", E_mean_current,", E_mean_previous =", E_mean_previous)
 
         if all(abs(E_mean_current - prev_mean) <= comparison_accuracy for prev_mean in E_mean_previous): # jeśli wszystkie średnie z tablicy są równe aktualnej średniej z dokładnością do comparison_accuracy, to break
             break
-        else: #jeśli średnie z dokładnoscią do pewnej liczby się różnią, to:
+        else: #jeśli średnie z dokładnoscią do pewnej liczby się różnią, 
             E_mean_previous[mean_iteration%how_many_previous] = E_mean_current #dodanie aktualnej średniej do tablicy poprzednich średnich
             mean_iteration += 1 #zwiększenie iteratora mówiącego którą średnią z poprzednich (z tablicy) teraz będziemy rozpatrywać
    
@@ -97,9 +104,15 @@ for i in range(min(K), max(K)+1):
 P = P/N
 zakres = np.arange(min(K), max(K)+1)
 
+## rozkład teoretyczny ##
+teoria = binominal_dist(N, p)
+
 ## wykres ##
 
 plt.bar(zakres, P, width=0.9, label="Metoda MC")
+left, right = plt.xlim()
+plt.bar(np.arange(len(teoria)), teoria, width = 0.6, alpha = 0.5, label="Rozkład dwumianowy") # utworzenie wykresu słupkowego P(k) dla wzorku teoretycznego
+plt.xlim((left, right))
 plt.title("Histogram P(k) dla symulowanego grafu o N = " + str(N) + " oraz p = " + str(p))
 plt.xlabel("k"); plt.ylabel("Prawdopodobieństwo")
 plt.grid(True)
